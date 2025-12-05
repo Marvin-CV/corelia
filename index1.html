@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Mi Portal Gamer ⚡</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    
+    <style>
+        /* ============================================== */
+        /* == ESTILOS GLOBALES Y FUTURISTAS == */
+        /* ============================================== */
+
+        :root {
+            --color-bg: #03001C;
+            --color-neon-blue: #00FFFF; 
+            --color-neon-purple: #9D00FF; 
+            --color-text: #E0E0E0;
+            --font-main: 'Orbitron', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--color-text);
+            background-color: var(--color-bg);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Fondo dinámico */
+        .background-glitch {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(-45deg, var(--color-bg), #0f0030, #2c004d, var(--color-bg));
+            background-size: 400% 400%;
+            opacity: 0.6;
+            z-index: -1;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            text-align: center;
+            width: 100%; /* Asegura que ocupe el ancho disponible */
+        }
+
+        .neon-text h1 {
+            font-size: 3em;
+            padding: 20px 0;
+            text-shadow: 0 0 7px var(--color-neon-blue), 0 0 10px var(--color-neon-blue), 
+                         0 0 21px var(--color-neon-blue), 0 0 42px var(--color-neon-blue);
+            animation: flicker 1.5s infinite alternate;
+        }
+
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { text-shadow: 0 0 7px var(--color-neon-blue), 0 0 10px var(--color-neon-blue), 0 0 21px var(--color-neon-blue), 0 0 42px var(--color-neon-blue); }
+            20%, 24%, 55% { text-shadow: none; }
+        }
+        
+        /* ============================================== */
+        /* == ESTILOS DE LA NINTENDO SWITCH (CSS Puro) == */
+        /* ============================================== */
+
+        .switch-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 50px auto;
+            /* Importante para evitar scroll horizontal en móviles */
+            width: 100%; 
+            overflow: visible; 
+        }
+        
+        /* --- ESTILOS DEL HUD INTERNO --- */
+        .screen-internal-wrapper {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .description-hud-inner {
+            background-color: rgba(157, 0, 255, 0.15);
+            border: 2px solid var(--color-neon-purple);
+            box-shadow: inset 0 0 15px var(--color-neon-purple), 0 0 10px rgba(157, 0, 255, 0.5);
+            border-radius: 6px;
+            padding: 12px;
+            text-align: left;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            font-size: 0.85em; 
+            line-height: 1.4;
+        }
+        
+        .description-hud-inner::-webkit-scrollbar { width: 5px; }
+        .description-hud-inner::-webkit-scrollbar-track { background: #03001C; }
+        .description-hud-inner::-webkit-scrollbar-thumb { background: var(--color-neon-purple); border-radius: 10px; }
+
+        .description-hud-inner h2 {
+            color: var(--color-neon-purple);
+            margin-bottom: 8px;
+            font-weight: 700;
+            font-size: 1.2em;
+            text-align: center;
+            text-shadow: 0 0 5px var(--color-neon-purple);
+        }
+
+        /* --- Estructura Switch --- */
+        .switch-card { 
+            display: flex; 
+            align-items: stretch; 
+            height: 196.5px;
+            /* Se eliminó el width fijo de 470px para permitir que flexbox calcule el ancho total real */
+            width: max-content; 
+        }
+        
+        .screen-outline { display: flex; align-items: stretch; padding: 10px 14px; justify-content: center; border-radius: 2px; background: linear-gradient(180deg, rgba(71, 77, 79, 1) 0%, rgba(90, 97, 100, 1) 3%, rgba(46, 50, 51, 1) 5%, rgba(46, 50, 51, 1) 100%); }
+        /* NOTA: screen-border tiene 500px, + los joycons, el total es aprox 660px de ancho */
+        .screen-border { border-top: 17px solid black; border-bottom: 17px solid black; border-left: 25px solid black; border-right: 25px solid black; border-radius: 6px; flex: 1; background-color: black; width: 500px; display: flex; }
+        .screen { border-radius: 2px; background: linear-gradient(135deg, rgba(38, 39, 43, 1) 0%, rgba(49, 52, 62, 1) 49%, rgba(38, 39, 43, 1) 100%); flex: 1; overflow: hidden; cursor: pointer; }
+        
+        /* Componentes Joycon (Sin cambios en geometría) */
+        .joy-con { width: 65px; height: 196.5px; position: relative; flex-shrink: 0; }
+        .joy-con.left { border-top-left-radius: 40px; border-bottom-left-radius: 40px; background: linear-gradient(148deg, rgba(0, 186, 219, 1) 0%, rgba(0, 185, 220, 1) 100%); box-shadow: inset 3px -4px 10px #058ca5, inset 0px 5px 3px #6ad9ed; border-top-right-radius: 4px; border-bottom-right-radius: 4px; }
+        .joy-con.right { border-top-right-radius: 40px; border-bottom-right-radius: 40px; border-top-left-radius: 4px; border-bottom-left-radius: 4px; background: linear-gradient(148deg, rgba(250, 97, 93, 1) 0%, rgba(239, 79, 77, 1) 100%); box-shadow: inset -3px -4px 10px #d12621, inset 0px 5px 3px #fd877c; }
+        .joy-con.left .minus { position: absolute; top: 18px; width: 10px; height: 2px; border: 0.8px solid #222; border-radius: 1px; right: 5px; background-color: #3c3d41; }
+        .joy-con.left .joystick { left: 50%; transform: translate(-50%); top: 35px; }
+        .joy-con.right .joystick { top: 87.5px; left: 14px; filter: contrast(130%) drop-shadow(0px 1px 2px #00000088); }
+        .joystick { background-color: #2d2e33; border-radius: 100%; height: 28px; width: 28px; position: relative; border: 1px solid #2d2e33; overflow: hidden; cursor: pointer; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); grid-column-gap: 1px; grid-row-gap: 1px; filter: drop-shadow(0px 1px 2px #00000088); }
+        .joystick-edge { background-color: #444; }
+        .joystick-inner-border { position: absolute; top: 50%; left: 50%; background-color: #2d2e33; padding: 1px; z-index: 2; border-radius: 100%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; }
+        .joystick-inner { width: 22px; height: 22px; border-radius: 50%; background-color: #282c2f; box-shadow: inset 0px -4px 4px rgb(49, 49, 49), inset 0px 4px 12px rgb(124, 124, 124), inset 0px 4px 6px rgb(0, 0, 0); z-index: 3; position: relative; }
+        .numpad-container { position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 44px; height: 44px; }
+        .joy-con.left .numpad-container { top: 82px; left: 12px; color: #1b1b1c; font-size: 8px; }
+        .joy-con.right .numpad-container { top: 28.5px; left: 8px; color: #d7d7d7; font-size: 7px; }
+        .numpad-middle { display: flex; align-items: center; gap: 16px; }
+        .plus-symbol { width: 10px; height: 10px; position: absolute; display: inline-block; top: 14.5px; left: 5px; cursor: pointer; }
+        .plus-symbol-overlap-fixer { position: absolute; background-color: #333; width: 2px; height: calc(100% - 2px); border-radius: 1px; top: 50%; left: 50%; z-index: 3; transform: translate(-50%, -50%); }
+        .plus-symbol::before, .plus-symbol::after { content: ""; position: absolute; background-color: #333; border: 0.8px solid #222; border-radius: 1px; }
+        .plus-symbol::before { width: 2px; height: 86.5%; left: 50%; transform: translateX(-50%); }
+        .plus-symbol::after { width: 86.5%; height: 2px; top: 50%; transform: translateY(-50%); }
+        .numpad-button { width: 12px; height: 12px; background-color: #505050; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid #2d2e33; box-shadow: inset -0.5px -0.5px 1.5px rgba(92, 92, 92, 0.5), inset 0.2px 1px 0.8px rgba(143, 143, 143, 0.658), inset -1px -1px 2px rgba(31, 31, 31, 0.76), 0px 0px 3px #00000055; }
+        .numpad-part { flex: 1; display: flex; align-items: center; justify-content: center; }
+        .record-button { width: 10px; height: 10px; cursor: pointer; border: 1px solid #2d2e33; border-radius: 1px; position: absolute; top: 134px; left: 39px; background: linear-gradient(135deg, #605f65 0%, rgba(60, 61, 66, 1) 100%); display: flex; align-items: center; justify-content: center; }
+        .record-button-inner { width: 4px; height: 4px; background: linear-gradient(135deg, #605f65 0%, rgba(60, 61, 66, 1) 100%); border: 1px solid #2d2e33; border-radius: 50%; }
+        .home-button-border { position: absolute; cursor: pointer; top: 132.5px; left: 12px; border: 1px solid #1b1b1c; background: linear-gradient(135deg, #a0a0a0 0%, #303030 100%); height: 14px; width: 14px; padding: 1px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .home-button { width: 12px; height: 12px; border: 0.9px solid #1b1b1c; background: linear-gradient(180deg, #6b6b6b 0%, #303030 100%); border-radius: 50%; display: flex; color: black; align-items: center; justify-content: center; font-size: 9px; }
+      
+        /* ============================================== */
+        /* == ESTILOS DE LOS BOTONES (HUB SOCIAL) == */
+        /* ============================================== */
+
+        .social-hub {
+            margin-top: 50px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .social-hub h3 {
+            width: 100%;
+            margin-bottom: 20px;
+            color: var(--color-neon-blue);
+            letter-spacing: 3px;
+            text-shadow: 0 0 5px var(--color-neon-blue);
+        }
+
+        .neon-button {
+            text-decoration: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: 3px solid;
+            border-radius: 5px;
+            transition: all 0.3s ease-in-out;
+            position: relative;
+            overflow: hidden;
+            color: var(--color-text);
+            border-color: var(--color-neon-blue);
+            box-shadow: 0 0 5px var(--color-neon-blue);
+            
+            display: flex;
+            align-items: center;
+            gap: 10px; 
+            background-color: rgba(0,0,0,0.3);
+
+            /* APLICAMOS LA ANIMACIÓN AQUÍ */
+            /* 5s infinite = El ciclo dura 5 segundos y se repite para siempre */
+            animation: text-glitch-loop 5s infinite;
+        }
+
+        /* Creamos un retraso diferente para cada botón para que no lo hagan todos a la vez */
+        .neon-button:nth-child(1) { animation-delay: 0s; }
+        .neon-button:nth-child(2) { animation-delay: 1.5s; }
+        .neon-button:nth-child(3) { animation-delay: 3s; }
+        .neon-button:nth-child(4) { animation-delay: 4.5s; }
+
+        .neon-button i {
+            font-size: 1.2em;
+        }
+
+        .neon-button:hover {
+            color: var(--color-bg);
+            background-color: var(--color-neon-blue);
+            box-shadow: 0 0 15px var(--color-neon-blue), 0 0 30px var(--color-neon-blue), 0 0 60px var(--color-neon-blue);
+            transform: translateY(-5px) scale(1.05);
+            /* Pausamos el glitch automático si pasas el mouse para que no moleste */
+            animation-play-state: paused; 
+            text-shadow: none;
+        }
+
+        /* --- DEFINICIÓN DEL GLITCH (SOLO LETRAS, SIN TEMBLOR) --- */
+        @keyframes text-glitch-loop {
+            /* Del 0% al 92% no pasa nada (texto normal) */
+            0%, 92% { 
+                text-shadow: none; 
+            }
+            
+            /* En estos pequeños momentos, separamos los colores */
+            93% { 
+                text-shadow: 2px 0 #ff0000, -2px 0 #0000ff; 
+            }
+            95% { 
+                text-shadow: -2px 0 #00ff00, 2px 0 #ff00ff; 
+            }
+            97% { 
+                text-shadow: 2px 0 #ff0000, -2px 0 #0000ff; 
+            }
+            
+            /* Vuelta a la normalidad */
+            100% { 
+                text-shadow: none; 
+            }
+        }
+
+        /* Colores específicos */
+        .twitch { border-color: #9146FF; box-shadow: 0 0 5px #9146FF; }
+        .twitch:hover { background-color: #9146FF; box-shadow: 0 0 15px #9146FF, 0 0 30px #9146FF; }
+        
+        .x { border-color: #ffffff; box-shadow: 0 0 5px #ffffff; }
+        .x:hover { background-color: #ffffff; color: #000; box-shadow: 0 0 15px #ffffff, 0 0 30px #ffffff; }
+        
+        .tktk { border-color: #858585; box-shadow: 0 0 5px #858585; }
+        .tktk:hover { background-color: #858585; color: #000; box-shadow: 0 0 15px #858585, 0 0 30px #858585; }
+        
+        
+        .github { border-color: #2dba4e; box-shadow: 0 0 5px #2dba4e; }
+        .github:hover { background-color: #2dba4e; color: #fff; box-shadow: 0 0 15px #2dba4e, 0 0 30px #2dba4e; }
+        
+        .linkedin { border-color: #0077B5; box-shadow: 0 0 5px #0077B5; }
+        .linkedin:hover { background-color: #0077B5; color: white; box-shadow: 0 0 15px #0077B5, 0 0 30px #0077B5; }
+      
+        .Instagram { border-color: #e99700; box-shadow: 0 0 5px #e99700; }
+        .Instagram:hover { background-color: #e99700; color: white; box-shadow: 0 0 15px #e99700, 0 0 30px #e99700; }
+      
+        footer { margin-top: 50px; padding: 10px; font-size: 0.8em; opacity: 0.5; }
+
+        /* --- RESPONSIVE OPTIMIZADO PARA LA SWITCH --- */
+        
+        /* 1. TABLETS PEQUEÑAS (Ancho < 720px) */
+        @media (max-width: 720px) {
+            .container { margin: 20px 10px; padding: 10px; }
+            .neon-text h1 { font-size: 2em; }
+            
+            /* Reducimos la Switch al 75% de su tamaño */
+            .switch-card { 
+                transform: scale(0.75); 
+                /* Compensamos el espacio vacío que deja el escalado */
+                margin-top: -20px;
+                margin-bottom: -20px;
+            }
+        }
+
+        /* 2. MÓVILES (Ancho < 500px) */
+        @media (max-width: 500px) {
+            .neon-text h1 { font-size: 1.5em; }
+
+            /* Reducimos la Switch al 48% (casi la mitad) para que quepa en vertical */
+            .switch-card { 
+                transform: scale(0.48); 
+                /* Ajustamos márgenes fuertemente porque el scale deja mucho espacio */
+                margin-left: -50%; 
+                margin-right: -50%;
+                margin-top: -50px;
+                margin-bottom: -50px;
+            }
+            
+            .neon-button { width: 90%; display: block; margin: 0 auto; font-size: 1em; }
+            .social-hub { gap: 15px; }
+
+            #ghost {
+                scale: 0.3;
+            }
+        }
+
+
+
+    /* --- NUEVOS ESTILOS DE FONDO (SLIDESHOW) --- */
+
+/* Contenedor fijo para las imágenes */
+#background-slider {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2; /* Al fondo del todo */
+}
+
+/* Estilo de cada imagen individual */
+.bg-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0; /* Por defecto invisibles */
+    transition: opacity 1.5s ease-in-out; /* Transición suave de 1.5 segundos */
+}
+
+/* Clase para mostrar la imagen activa */
+.bg-slide.active {
+    opacity: 1;
+}
+
+/* --- OVERLAY (CAPA OSCURA) --- */
+/* Mantiene el toque morado/azul oscuro para que se lea el texto */
+.background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Gradiente semitransparente oscuro */
+    background: linear-gradient(to bottom, rgba(3, 0, 28, 0.8), rgba(44, 0, 77, 0.7));
+    z-index: -1; /* Encima de las imágenes, debajo del contenido */
+    pointer-events: none; /* Permite clickear a través de ella */
+}
+
+#ghost {
+  position: relative;
+  scale: 0.5;
+}
+
+#red {
+  animation: upNDown infinite 0.5s;
+  position: relative;
+  width: 140px;
+  height: 140px;
+  display: grid;
+  grid-template-columns: repeat(14, 1fr);
+  grid-template-rows: repeat(14, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+  grid-template-areas:
+    "a1  a2  a3  a4  a5  top0  top0  top0  top0  a10 a11 a12 a13 a14"
+    "b1  b2  b3  top1 top1 top1 top1 top1 top1 top1 top1 b12 b13 b14"
+    "c1 c2 top2 top2 top2 top2 top2 top2 top2 top2 top2 top2 c13 c14"
+    "d1 top3 top3 top3 top3 top3 top3 top3 top3 top3 top3 top3 top3 d14"
+    "e1 top3 top3 top3 top3 top3 top3 top3 top3 top3 top3 top3 top3 e14"
+    "f1 top3 top3 top3 top3 top3 top3 top3 top3 top3 top3 top3 top3 f14"
+    "top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4"
+    "top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4"
+    "top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4"
+    "top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4"
+    "top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4"
+    "top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4"
+    "st0 st0 an4 st1 an7 st2 an10 an10 st3 an13 st4 an16 st5 st5"
+    "an1 an2 an3 an5 an6 an8 an9 an9 an11 an12 an14 an15 an17 an18";
+}
+
+@keyframes upNDown {
+  0%,
+  49% {
+    transform: translateY(0px);
+  }
+  50%,
+  100% {
+    transform: translateY(-10px);
+  }
+}
+
+#top0,
+#top1,
+#top2,
+#top3,
+#top4,
+#st0,
+#st1,
+#st2,
+#st3,
+#st4,
+#st5 {
+  background-color: red;
+}
+
+#top0 {
+  grid-area: top0;
+}
+
+#top1 {
+  grid-area: top1;
+}
+
+#top2 {
+  grid-area: top2;
+}
+
+#top3 {
+  grid-area: top3;
+}
+
+#top4 {
+  grid-area: top4;
+}
+
+#st0 {
+  grid-area: st0;
+}
+
+#st1 {
+  grid-area: st1;
+}
+
+#st2 {
+  grid-area: st2;
+}
+
+#st3 {
+  grid-area: st3;
+}
+
+#st4 {
+  grid-area: st4;
+}
+
+#st5 {
+  grid-area: st5;
+}
+
+#an1 {
+  grid-area: an1;
+  animation: flicker0 infinite 0.5s;
+}
+
+#an18 {
+  grid-area: an18;
+  animation: flicker0 infinite 0.5s;
+}
+
+#an2 {
+  grid-area: an2;
+  animation: flicker1 infinite 0.5s;
+}
+
+#an17 {
+  grid-area: an17;
+  animation: flicker1 infinite 0.5s;
+}
+
+#an3 {
+  grid-area: an3;
+  animation: flicker1 infinite 0.5s;
+}
+
+#an16 {
+  grid-area: an16;
+  animation: flicker1 infinite 0.5s;
+}
+
+#an4 {
+  grid-area: an4;
+  animation: flicker1 infinite 0.5s;
+}
+
+#an15 {
+  grid-area: an15;
+  animation: flicker1 infinite 0.5s;
+}
+
+#an6 {
+  grid-area: an6;
+  animation: flicker0 infinite 0.5s;
+}
+
+#an12 {
+  grid-area: an12;
+  animation: flicker0 infinite 0.5s;
+}
+
+#an7 {
+  grid-area: an7;
+  animation: flicker0 infinite 0.5s;
+}
+
+#an13 {
+  grid-area: an13;
+  animation: flicker0 infinite 0.5s;
+}
+
+#an9 {
+  grid-area: an9;
+  animation: flicker1 infinite 0.5s;
+}
+
+#an10 {
+  grid-area: an10;
+  animation: flicker1 infinite 0.5s;
+}
+
+#an8 {
+  grid-area: an8;
+  animation: flicker0 infinite 0.5s;
+}
+
+#an11 {
+  grid-area: an11;
+  animation: flicker0 infinite 0.5s;
+}
+
+@keyframes flicker0 {
+  0%,
+  49% {
+    background-color: red;
+  }
+  50%,
+  100% {
+    background-color: transparent;
+  }
+}
+
+@keyframes flicker1 {
+  0%,
+  49% {
+    background-color: transparent;
+  }
+  50%,
+  100% {
+    background-color: red;
+  }
+}
+
+#eye {
+  width: 40px;
+  height: 50px;
+  position: absolute;
+  top: 30px;
+  left: 10px;
+}
+
+#eye::before {
+  content: "";
+  background-color: white;
+  width: 20px;
+  height: 50px;
+  transform: translateX(10px);
+  display: block;
+  position: absolute;
+}
+
+#eye::after {
+  content: "";
+  background-color: white;
+  width: 40px;
+  height: 30px;
+  transform: translateY(10px);
+  display: block;
+  position: absolute;
+}
+
+#eye1 {
+  width: 40px;
+  height: 50px;
+  position: absolute;
+  top: 30px;
+  right: 30px;
+}
+
+#eye1::before {
+  content: "";
+  background-color: white;
+  width: 20px;
+  height: 50px;
+  transform: translateX(10px);
+  display: block;
+  position: absolute;
+}
+
+#eye1::after {
+  content: "";
+  background-color: white;
+  width: 40px;
+  height: 30px;
+  transform: translateY(10px);
+  display: block;
+  position: absolute;
+}
+
+#pupil {
+  width: 20px;
+  height: 20px;
+  background-color: blue;
+  position: absolute;
+  top: 50px;
+  left: 10px;
+  z-index: 1;
+  animation: eyesMovement infinite 3s;
+}
+
+#pupil1 {
+  width: 20px;
+  height: 20px;
+  background-color: blue;
+  position: absolute;
+  top: 50px;
+  right: 50px;
+  z-index: 1;
+  animation: eyesMovement infinite 3s;
+}
+
+@keyframes eyesMovement {
+  0%,
+  49% {
+    transform: translateX(0px);
+  }
+  50%,
+  99% {
+    transform: translateX(10px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}
+
+#shadow {
+  background-color: black;
+  width: 140px;
+  height: 140px;
+  position: absolute;
+  border-radius: 50%;
+  transform: rotateX(80deg);
+  filter: blur(20px);
+  top: 80%;
+  animation: shadowMovement infinite 0.5s;
+}
+
+@keyframes shadowMovement {
+  0%,
+  49% {
+    opacity: 0.5;
+  }
+  50%,
+  100% {
+    opacity: 0.2;
+  }
+}
+
+
+    </style>
+</head>
+<body>
+
+    <div id="background-slider"></div>
+
+    <div class="background-overlay"></div>
+    
+    <div class="container">
+        <header class="neon-text" style="display: flex; justify-content: center;">
+            
+            <div id="ghost">
+                <div id="red">
+                    <div id="pupil"></div>
+                    <div id="pupil1"></div>
+                    <div id="eye"></div>
+                    <div id="eye1"></div>
+                    <div id="top0"></div>
+                    <div id="top1"></div>
+                    <div id="top2"></div>
+                    <div id="top3"></div>
+                    <div id="top4"></div>
+                    <div id="st0"></div>
+                    <div id="st1"></div>
+                    <div id="st2"></div>
+                    <div id="st3"></div>
+                    <div id="st4"></div>
+                    <div id="st5"></div>
+                    <div id="an1"></div>
+                    <div id="an2"></div>
+                    <div id="an3"></div>
+                    <div id="an4"></div>
+                    <div id="an5"></div>
+                    <div id="an6"></div>
+                    <div id="an7"></div>
+                    <div id="an8"></div>
+                    <div id="an9"></div>
+                    <div id="an10"></div>
+                    <div id="an11"></div>
+                    <div id="an12"></div>
+                    <div id="an13"></div>
+                    <div id="an14"></div>
+                    <div id="an15"></div>
+                    <div id="an16"></div>
+                    <div id="an17"></div>
+                    <div id="an18"></div>
+                </div>
+                <div id="shadow"></div>
+            </div>
+
+            <h1>>> NLB | Corelia <<</h1>
+
+            <div id="ghost">
+                <div id="red">
+                    <div id="pupil"></div>
+                    <div id="pupil1"></div>
+                    <div id="eye"></div>
+                    <div id="eye1"></div>
+                    <div id="top0"></div>
+                    <div id="top1"></div>
+                    <div id="top2"></div>
+                    <div id="top3"></div>
+                    <div id="top4"></div>
+                    <div id="st0"></div>
+                    <div id="st1"></div>
+                    <div id="st2"></div>
+                    <div id="st3"></div>
+                    <div id="st4"></div>
+                    <div id="st5"></div>
+                    <div id="an1"></div>
+                    <div id="an2"></div>
+                    <div id="an3"></div>
+                    <div id="an4"></div>
+                    <div id="an5"></div>
+                    <div id="an6"></div>
+                    <div id="an7"></div>
+                    <div id="an8"></div>
+                    <div id="an9"></div>
+                    <div id="an10"></div>
+                    <div id="an11"></div>
+                    <div id="an12"></div>
+                    <div id="an13"></div>
+                    <div id="an14"></div>
+                    <div id="an15"></div>
+                    <div id="an16"></div>
+                    <div id="an17"></div>
+                    <div id="an18"></div>
+                </div>
+                <div id="shadow"></div>
+            </div>
+
+
+        </header>
+
+        <div class="switch-container">
+            <div class="switch-card">
+                <div class="joy-con left">
+                    <div class="minus button"></div>
+                    <div class="joystick"><div class="joystick-inner-border"><div class="joystick-inner"></div></div><div class="joystick-edge"></div><div class="joystick-edge"></div><div class="joystick-edge"></div><div class="joystick-edge"></div></div>
+                    <div class="numpad-container"><div class="numpad-part numpad-top"><div class="numpad-button">▲</div></div><div class="numpad-part numpad-middle"><div class="numpad-button">◀</div><div class="numpad-button">▶</div></div><div class="numpad-part numpad-bottom"><div class="numpad-button">▼</div></div></div>
+                    <div class="record-button"><div class="record-button-inner"></div></div>
+                </div>
+                
+                <div class="screen-outline">
+                    <div class="screen-border">
+                        <div class="screen">
+                            <div class="screen-internal-wrapper">
+                                <div class="description-hud-inner">
+                                    <h2>// About me //</h2>
+                                    <p>
+                                        Hola, soy Corelia. Hago streams de codcito casi todas las noches, agradeceria mucho
+                                        sí me sigues en mis redes sociales. La manca del cod y su mochila de confianza 💖
+                                    </p>
+                                </div>
+                            </div>
+                            </div>
+                    </div>
+                </div>
+                
+                <div class="joy-con right">
+                    <div class="plus-symbol"><div class="plus-symbol-overlap-fixer"></div></div>
+                    <div class="joystick"><div class="joystick-inner-border"><div class="joystick-inner"></div></div><div class="joystick-edge"></div><div class="joystick-edge"></div><div class="joystick-edge"></div><div class="joystick-edge"></div></div>
+                    <div class="numpad-container"><div class="numpad-part numpad-top"><div class="numpad-button">X</div></div><div class="numpad-part numpad-middle"><div class="numpad-button button">Y</div><div class="numpad-button button">A</div></div><div class="numpad-part numpad-bottom"><div class="numpad-button button">B</div></div></div>
+                    <div class="home-button-border"><div class="home-button">⌂</div></div>
+                </div>
+            </div>
+        </div>
+        
+        <section class="social-hub">
+            <h3>[ INTERFAZ SOCIAL ]</h3>
+            
+            <!-- <a href="TU_LINK_TWITCH" target="_blank" class="neon-button twitch">
+                <i class="fab fa-twitch"></i> TWITCH
+            </a> -->
+            
+            <a href="https://www.tiktok.com/@xlthvm" target="_blank" class="neon-button x">
+                <i class="fa-brands fa-tiktok"></i> Corelia [Principal]
+            </a>
+
+            <a href="https://www.tiktok.com/@nlb.corelia" target="_blank" class="neon-button tktk">
+                <i class="fa-brands fa-tiktok"></i> Corelia [Respaldo]
+            </a>
+
+            <a href="https://www.tiktok.com/@coreliax1" target="_blank" class="neon-button tktk">
+                <i class="fa-brands fa-tiktok"></i> Corelia [Respaldo]
+            </a>
+            
+            <a href="https://www.instagram.com/corelia_oficial?igsh=NmRndGMyNzg1Y2Vs" target="_blank" class="neon-button Instagram">
+                <i class="fa-brands fa-instagram"></i> NLB | Corelia
+            </a>
+            
+            <!-- <a href="TU_LINK_LINKEDIN" target="_blank" class="neon-button linkedin">
+                <i class="fab fa-linkedin-in"></i> LINKEDIN
+            </a> -->
+        </section>
+        
+        <footer><p>&copy; TSMEX_Hak</p></footer>
+    </div>
+</body>
+</html>
+<script>
+    // --- CONFIGURACIÓN DE IMÁGENES ---
+    // Coloca aquí las URLs de tus imágenes (pueden ser locales o de internet)
+    const images = [
+        'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop', // Ejemplo Gamer 1
+        'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?q=80&w=2065&auto=format&fit=crop', // Ejemplo Gamer 2
+        'https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=2071&auto=format&fit=crop'  // Ejemplo Gamer 3
+    ];
+
+    const sliderContainer = document.getElementById('background-slider');
+    let currentIndex = 0;
+    const intervalTime = 5000; // Tiempo en milisegundos (5000ms = 5 segundos)
+
+    // 1. Crear los elementos div para cada imagen
+    images.forEach((imgUrl, index) => {
+        const slide = document.createElement('div');
+        slide.classList.add('bg-slide');
+        if (index === 0) slide.classList.add('active'); // La primera imagen visible
+        slide.style.backgroundImage = `url('${imgUrl}')`;
+        sliderContainer.appendChild(slide);
+    });
+
+    // 2. Función para cambiar la imagen
+    function changeSlide() {
+        const slides = document.querySelectorAll('.bg-slide');
+        
+        // Quitar la clase 'active' de la imagen actual
+        slides[currentIndex].classList.remove('active');
+
+        // Calcular el índice de la siguiente imagen
+        currentIndex = (currentIndex + 1) % slides.length;
+
+        // Añadir la clase 'active' a la siguiente imagen
+        slides[currentIndex].classList.add('active');
+    }
+
+    // 3. Iniciar el intervalo
+    setInterval(changeSlide, intervalTime);
+</script>
